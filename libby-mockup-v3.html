@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Libby — Rate & Review · Feature Concept</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; user-select:none; }
+
+:root {
+  --bg: #000;
+  --surface: #111;
+  --surface2: #1c1c1c;
+  --surface3: #242424;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --teal: #2ec4b6;
+  --teal-dim: rgba(46,196,182,0.11);
+  --teal-mid: rgba(46,196,182,0.28);
+  --text: #f2f2f2;
+  --text-mid: #6a6a6a;
+  --text-soft: #9a9a9a;
+  --text-dim: #303030;
+  --purple: #7c6dfa;
+  --pink: #e05c8a;
+  --gold: #c9a55a;
+  --gold-dim: rgba(201,165,90,0.12);
+  --navy: #1b2040;
+  --body: 'DM Sans', sans-serif;
+  --serif: 'DM Serif Display', serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: #080808;
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
+  padding: 0 0 80px;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  text-align: center;
+  padding: 56px 20px 44px;
+  position: relative;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(46,196,182,0.05) 0%, transparent 70%);
+  pointer-events: none;
+}
+.ph-eyebrow {
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.ph-dot { width: 4px; height: 4px; background: var(--teal); border-radius: 50%; }
+.ph-title {
+  font-family: var(--serif);
+  font-size: clamp(28px, 5vw, 44px);
+  color: var(--text); font-style: italic;
+  font-weight: 400; line-height: 1.15;
+  margin-bottom: 10px;
+}
+.ph-sub {
+  font-size: 13px; color: var(--text-mid);
+  max-width: 480px; margin: 0 auto 20px;
+  line-height: 1.6;
+}
+.ph-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; color: rgba(46,196,182,0.6);
+  border: 1px solid rgba(46,196,182,0.15);
+  border-radius: 20px; padding: 4px 12px;
+}
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  text-align: center;
+  padding: 48px 20px 28px;
+}
+.sh-label {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 8px;
+}
+.sh-title {
+  font-family: var(--serif);
+  font-size: clamp(18px, 3vw, 26px);
+  color: var(--text); font-style: italic;
+  font-weight: 400;
+}
+.sh-divider {
+  width: 40px; height: 1px;
+  background: var(--teal-mid);
+  margin: 12px auto 0;
+}
+
+/* ── PHONES CONTAINER ── */
+.phones-wrap {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: 0 24px;
+}
+
+/* BEFORE/AFTER pair */
+.ba-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.ba-phones {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.ba-label {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 6px 0 0;
+}
+.ba-label.before { color: var(--text-mid); }
+.ba-label.after { color: var(--teal); }
+.ba-connector {
+  width: 32px; height: 2px;
+  background: linear-gradient(to right, var(--text-dim), var(--teal));
+  margin: 20px 4px 0; align-self: flex-start; margin-top: 325px;
+  flex-shrink: 0;
+}
+
+/* ── PHONE SHELL ── */
+.phone-col {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 10px;
+}
+.phone-label {
+  font-size: 9.5px; color: rgba(255,255,255,0.2);
+  letter-spacing: 0.1em; text-transform: uppercase;
+}
+.phone-sublabel {
+  font-size: 8px; color: rgba(46,196,182,0.5);
+  letter-spacing: 0.06em; text-transform: uppercase;
+  margin-top: -7px;
+}
+
+.phone {
+  width: 295px; height: 638px;
+  background: var(--bg);
+  border-radius: 44px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  /* Realistic layered phone shell */
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.12),
+    0 0 0 2px #1a1a1a,
+    0 0 0 3.5px rgba(255,255,255,0.05),
+    0 24px 60px rgba(0,0,0,0.9),
+    0 8px 20px rgba(0,0,0,0.6);
+}
+/* Side button detail */
+.phone::after {
+  content: '';
+  position: absolute;
+  right: -2px; top: 120px;
+  width: 3px; height: 60px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 0 2px 2px 0;
+  pointer-events: none;
+}
+
+.phone-inner {
+  position: absolute; inset: 0;
+  overflow-y: auto; overflow-x: hidden;
+  scrollbar-width: none;
+  padding-bottom: 70px;
+}
+.phone-inner::-webkit-scrollbar { display: none; }
+
+/* Dynamic island instead of notch */
+.dynamic-island {
+  position: absolute;
+  top: 10px; left: 50%; transform: translateX(-50%);
+  width: 96px; height: 28px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 300;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+/* Status bar */
+.sb {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 20px 0;
+  font-size: 11.5px; font-weight: 600; color: var(--text);
+  position: relative; z-index: 200;
+}
+.sb-r {
+  display: flex; align-items: center; gap: 5px;
+}
+.signal-bars {
+  display: flex; align-items: flex-end; gap: 1.5px; height: 10px;
+}
+.bar {
+  width: 3px; background: rgba(255,255,255,0.8); border-radius: 1px;
+}
+.bar:nth-child(1) { height: 4px; }
+.bar:nth-child(2) { height: 6px; }
+.bar:nth-child(3) { height: 8px; }
+.bar:nth-child(4) { height: 10px; }
+.wifi-icon {
+  width: 14px; height: 10px;
+}
+.batt-wrap {
+  display: flex; align-items: center; gap: 1px;
+}
+.batt {
+  width: 22px; height: 11px;
+  border: 1.5px solid rgba(255,255,255,0.45);
+  border-radius: 3px; padding: 1.5px;
+  position: relative;
+}
+.batt::after {
+  content: '';
+  position: absolute; right: -4px; top: 50%; transform: translateY(-50%);
+  width: 2.5px; height: 5px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 0 1px 1px 0;
+}
+.batt-f { background: #f0c040; height: 100%; width: 55%; border-radius: 1px; }
+
+/* Bottom nav */
+.bnav {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 68px;
+  background: rgba(0,0,0,0.96);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: flex-start; padding-top: 10px;
+  z-index: 200;
+}
+.ni {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 3px;
+}
+.ni-i {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+.ni-i svg {
+  width: 22px; height: 22px;
+  stroke: rgba(255,255,255,0.22);
+  fill: none;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.18s;
+}
+.ni-l { font-size: 8px; color: #2e2e2e; letter-spacing: 0.02em; transition: color 0.18s; }
+.ni.on .ni-l { color: var(--teal); }
+.ni.on .ni-i svg { stroke: var(--teal); filter: drop-shadow(0 0 4px rgba(46,196,182,0.45)); }
+
+/* Nav SVGs shorthand */
+.svg-search { --d: "M10.5 10.5m-6.5 0a6.5 6.5 0 1 0 13 0a6.5 6.5 0 1 0 -13 0 M15.5 15.5l4.5 4.5"; }
+
+/* ════════════════════════════
+   SCREEN 1 — SHELF
+════════════════════════════ */
+.shelf-topbar {
+  padding: 28px 18px 0;
+  display: flex; justify-content: flex-end;
+}
+.actions-btn {
+  background: var(--teal); color: #000;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.09em; padding: 7px 15px;
+  border-radius: 20px; border: none; font-family: var(--body);
+  cursor: pointer;
+}
+
+/* Profile card */
+.profile-card {
+  margin: 13px 14px 0;
+  background: linear-gradient(145deg, #0d1c1a 0%, #080e0d 100%);
+  border: 1px solid rgba(46,196,182,0.2);
+  border-radius: 16px;
+  padding: 14px 15px;
+  position: relative; overflow: hidden; cursor: pointer;
+  transition: border-color 0.2s;
+}
+.profile-card:hover { border-color: rgba(46,196,182,0.38); }
+.profile-card::before {
+  content: '';
+  position: absolute; top: -50px; right: -50px;
+  width: 130px; height: 130px;
+  background: radial-gradient(circle, rgba(46,196,182,0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+.pc-top { display: flex; align-items: center; gap: 11px; margin-bottom: 13px; }
+.pc-av {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--teal) 0%, #1a9090 100%);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700; color: #000; flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(46,196,182,0.25);
+}
+.pc-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
+.pc-sub { font-size: 10px; color: var(--text-mid); margin-top: 2px; }
+.pc-stats {
+  display: flex;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 11px;
+}
+.pcs { flex: 1; text-align: center; }
+.pcs + .pcs { border-left: 1px solid rgba(255,255,255,0.06); }
+.pcs-n {
+  font-family: var(--serif); font-style: italic;
+  font-size: 20px; font-weight: 400; color: var(--teal);
+  line-height: 1;
+}
+.pcs-l {
+  font-size: 8px; color: var(--text-mid);
+  text-transform: uppercase; letter-spacing: 0.07em; margin-top: 4px;
+}
+
+/* Shelf rows */
+.shelf-rows { margin-top: 20px; }
+.srow {
+  display: flex; align-items: center;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.14s;
+}
+.srow:active { background: rgba(255,255,255,0.02); }
+.sr-ico {
+  width: 30px; height: 30px; background: var(--teal-dim);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  margin-right: 11px; flex-shrink: 0;
+}
+.sr-ico svg { width: 14px; height: 14px; stroke: var(--teal); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.sr-tx { flex: 1; }
+.sr-ti { font-size: 14px; color: var(--text); font-weight: 500; }
+.sr-su { font-size: 10px; color: var(--text-mid); margin-top: 1px; }
+.bdg {
+  font-size: 10.5px; font-weight: 600;
+  padding: 2px 8px; border-radius: 11px; margin-right: 5px;
+}
+.b-dk { background: var(--surface2); color: var(--text-mid); }
+.b-pk { background: var(--pink); color: #fff; }
+.chv {
+  color: var(--text-dim); font-size: 10px;
+}
+.chv svg { width: 12px; height: 12px; stroke: var(--text-dim); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Where left off */
+.wyl { padding: 18px 14px 0; }
+.wyl-h { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.wyl-t { font-size: 13px; font-weight: 600; color: var(--text); }
+.wyl-x {
+  width: 20px; height: 20px; background: var(--surface2); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; color: var(--text-mid); cursor: pointer;
+}
+.cc {
+  background: var(--surface); border-radius: 12px;
+  padding: 12px; display: flex; gap: 10px;
+  border: 1px solid var(--border);
+}
+.cc-cov {
+  width: 52px; height: 76px; border-radius: 6px; flex-shrink: 0;
+  background: linear-gradient(160deg, #0d1a4a, #1a0d3a);
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+  overflow: hidden;
+}
+.cc-inf { flex: 1; min-width: 0; }
+.cc-au { font-size: 10px; color: var(--text-mid); margin-bottom: 1px; }
+.cc-ti { font-size: 12.5px; font-weight: 700; color: var(--text); margin-bottom: 7px; }
+.pb { height: 2px; background: var(--surface2); border-radius: 2px; margin-bottom: 3px; }
+.pb-f { height: 2px; background: var(--teal); border-radius: 2px; transition: width 0.3s; }
+.pb-tx { font-size: 9px; color: var(--text-mid); }
+.cc-btns { display: flex; gap: 5px; margin-top: 7px; }
+.cbt { padding: 5px 9px; border-radius: 7px; font-size: 9.5px; font-weight: 600; border: none; cursor: pointer; font-family: var(--body); }
+.cbt-t { background: var(--teal); color: #000; }
+.cbt-g { background: var(--surface2); color: var(--text-soft); }
+
+/* ════════════════════════════
+   SCREEN 2A/2B — TIMELINE BEFORE/AFTER
+════════════════════════════ */
+.tl-tb { padding: 26px 18px 0; display: flex; justify-content: space-between; align-items: center; }
+.bk-l { font-size: 12px; color: var(--text); display: flex; align-items: center; gap: 3px; cursor: pointer; }
+.tl-pg { padding: 5px 18px 0; font-size: 26px; font-weight: 700; color: var(--text); }
+.tl-fi { display: flex; gap: 6px; padding: 9px 18px; overflow-x: auto; scrollbar-width: none; }
+.tl-fi::-webkit-scrollbar { display: none; }
+.fp {
+  padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: 600;
+  white-space: nowrap; cursor: pointer; border: 1px solid var(--border);
+  color: var(--text-mid); background: transparent; font-family: var(--body);
+  transition: all 0.14s;
+}
+.fp.on { background: var(--teal); color: #000; border-color: var(--teal); }
+.fp.ico { background: var(--teal); color: #000; border-color: var(--teal); padding: 5px 8px; }
+
+/* Activity chart */
+.act { padding: 0 18px 8px; }
+.act-l { font-size: 10px; color: var(--purple); font-weight: 600; margin-bottom: 7px; }
+.chart-w { height: 64px; position: relative; margin-bottom: 4px; }
+
+.yr-rw { display: flex; align-items: center; padding: 2px 0 5px; }
+.yr-tr { flex: 1; height: 2px; background: rgba(123,109,250,0.15); border-radius: 2px; position: relative; margin: 0 5px; }
+.yr-fi2 { position: absolute; left: 0; right: 30%; height: 100%; background: var(--purple); border-radius: 2px; }
+.yr-dt { width: 12px; height: 12px; background: var(--purple); border-radius: 50%; box-shadow: 0 0 5px rgba(123,109,250,0.45); position: absolute; top: 50%; transform: translateY(-50%); }
+.yr-dt.l { left: -6px; }
+.yr-dt.r { right: calc(30% - 6px); }
+.yr-lb { font-size: 9.5px; color: var(--text-mid); }
+
+/* Month group */
+.mo-h { display: flex; justify-content: space-between; align-items: center; padding: 8px 18px 6px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.mo-n { font-size: 16px; font-weight: 700; color: var(--text); }
+.mo-t { width: 24px; height: 24px; background: var(--surface2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text-mid); }
+
+/* Timeline book row */
+.tlb { display: flex; gap: 10px; padding: 11px 18px; border-bottom: 1px solid var(--border); cursor: pointer; align-items: flex-start; transition: background 0.14s; }
+.tlb:active { background: rgba(255,255,255,0.02); }
+.tlb-cv { width: 46px; height: 66px; border-radius: 5px; flex-shrink: 0; overflow: hidden; position: relative; }
+.tlb-cv-ph { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 17px; }
+.tlb-bdg { position: absolute; bottom: 2px; left: 1px; right: 1px; background: rgba(0,0,0,0.8); border-radius: 2px; padding: 1px; font-size: 6.5px; color: rgba(255,255,255,0.6); display: flex; align-items: center; justify-content: center; gap: 1px; }
+.tlb-m { flex: 1; min-width: 0; }
+.tlb-ti { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tlb-au { font-size: 10px; color: var(--text-mid); margin-bottom: 2px; }
+.tlb-bw { font-size: 9.5px; color: var(--text-mid); margin-bottom: 5px; }
+
+/* ★ Rating row — new */
+.tlb-rat { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+.sts { display: flex; gap: 1px; }
+.st { font-size: 10px; line-height: 1; transition: color 0.1s, transform 0.1s; }
+.st.f { color: var(--gold); }
+.st.e { color: #232323; }
+.st:hover { transform: scale(1.15); }
+.rtg { font-size: 8px; font-weight: 600; padding: 2px 6px; border-radius: 6px; letter-spacing: 0.02em; }
+.rt-lo { background: var(--gold-dim); color: var(--gold); }
+.rt-re { background: rgba(46,196,182,0.1); color: var(--teal); }
+.rt-ok { background: rgba(255,255,255,0.06); color: var(--text-soft); }
+.rt-rr { background: rgba(123,109,250,0.1); color: var(--purple); }
+.rate-cta { font-size: 9.5px; color: var(--teal); font-weight: 500; opacity: 0.7; }
+
+.tlb-ri { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; flex-shrink: 0; }
+.tlb-st { font-size: 17px; line-height: 1; }
+.tlb-dn { font-size: 14px; font-weight: 700; color: var(--text); line-height: 1; text-align: right; }
+.tlb-dm { font-size: 8.5px; color: var(--text-mid); text-align: right; text-transform: uppercase; letter-spacing: 0.04em; }
+.tlb-ch svg { width: 11px; height: 11px; stroke: var(--text-dim); fill: none; stroke-width: 2; stroke-linecap: round; margin-top: 3px; }
+
+/* ════════════════════════════
+   SCREEN 3 — BOOK DETAIL
+════════════════════════════ */
+.bd-hd {
+  background: linear-gradient(180deg, #1c2146 0%, #111630 55%, #000 100%);
+  padding: 26px 18px 18px;
+}
+.bd-ey { font-size: 8px; font-weight: 700; color: rgba(255,255,255,0.28); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 2px; }
+.bd-tr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+.bd-ti { font-size: 19px; font-weight: 700; color: var(--text); line-height: 1.15; max-width: 78%; letter-spacing: -0.01em; }
+.bd-sh svg { width: 18px; height: 18px; stroke: rgba(255,255,255,0.4); fill: none; stroke-width: 2; stroke-linecap: round; }
+.bd-cv { width: 106px; height: 156px; border-radius: 7px; overflow: hidden; box-shadow: 0 10px 28px rgba(0,0,0,0.7); }
+.bd-cv-ph { width: 100%; height: 100%; background: linear-gradient(160deg, #1a2a6e, #0d1540); display: flex; align-items: center; justify-content: center; font-size: 36px; }
+.bd-brow { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; border-bottom: 1px solid var(--border); }
+.bd-bl { font-size: 14px; font-weight: 600; color: var(--text); }
+.bb { display: flex; align-items: center; border-radius: 8px; overflow: hidden; }
+.bb-c { background: var(--purple); color: #fff; padding: 5px 7px; font-size: 12px; line-height: 1; }
+.bb-l { background: var(--teal); padding: 5px 8px; font-size: 10px; font-weight: 800; color: #000; font-family: var(--body); letter-spacing: 0.02em; }
+.bd-op { padding: 12px 18px; border-bottom: 1px solid var(--border); font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; }
+
+/* Your Review card */
+.bd-yr {
+  margin: 11px 14px 0;
+  background: linear-gradient(135deg, #0c1a18, #060f0e);
+  border: 1px solid rgba(46,196,182,0.18);
+  border-radius: 14px; padding: 13px 14px;
+}
+.byr-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.byr-h { font-size: 9.5px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.11em; text-transform: uppercase; }
+.byr-e { font-size: 9.5px; color: var(--teal); font-weight: 600; cursor: pointer; }
+.byr-sts { display: flex; gap: 3px; margin-bottom: 7px; }
+.byr-s { font-size: 16px; line-height: 1; }
+.byr-s.f { color: var(--gold); filter: drop-shadow(0 0 2px rgba(201,165,90,0.25)); }
+.byr-s.e { color: #1a1a1a; }
+.byr-tags { display: flex; gap: 5px; margin-bottom: 8px; flex-wrap: wrap; }
+.byr-tag { font-size: 9px; font-weight: 600; padding: 2px 8px; border-radius: 9px; }
+.byt-lo { background: var(--gold-dim); color: var(--gold); }
+.byt-re { background: rgba(46,196,182,0.1); color: var(--teal); }
+.byr-txt { font-size: 11px; color: rgba(255,255,255,0.5); line-height: 1.55; font-style: italic; }
+.byr-share { display: flex; align-items: center; gap: 7px; margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(255,255,255,0.05); }
+.byr-si svg { width: 13px; height: 13px; stroke: var(--teal); fill: none; stroke-width: 2; stroke-linecap: round; }
+.byr-st { font-size: 10px; color: var(--teal); font-weight: 500; flex: 1; }
+.byr-sb { font-size: 9.5px; font-weight: 700; background: var(--teal); color: #000; padding: 4px 10px; border-radius: 7px; border: none; font-family: var(--body); cursor: pointer; }
+
+/* Reading journey */
+.bd-jrn { margin: 10px 14px 0; background: var(--surface2); border-radius: 11px; padding: 11px 13px; }
+.jrn-row { display: flex; align-items: center; gap: 9px; padding: 4px 0; position: relative; }
+.jrn-row+.jrn-row::before { content: ''; position: absolute; left: 8px; top: -9px; width: 1px; height: 11px; background: rgba(123,109,250,0.2); }
+.jrn-dot { width: 17px; height: 17px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 7px; }
+.jd-a { background: rgba(46,196,182,0.15); color: var(--teal); border: 1px solid rgba(46,196,182,0.3); }
+.jd-d { background: rgba(123,109,250,0.15); color: var(--purple); border: 1px solid rgba(123,109,250,0.3); }
+.jrn-lbl { font-size: 11.5px; color: rgba(255,255,255,0.6); flex: 1; }
+.jrn-dt { font-size: 9px; color: var(--text-mid); text-align: right; line-height: 1.3; }
+.jrn-btn { display: block; margin-top: 9px; background: var(--surface); border: none; border-radius: 20px; padding: 7px; font-size: 8.5px; font-weight: 700; color: var(--text-mid); letter-spacing: 0.1em; text-transform: uppercase; font-family: var(--body); cursor: pointer; width: 100%; text-align: center; }
+.bd-tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 14px 0; }
+.bd-tag { padding: 6px 11px; border-radius: 5px; font-size: 11.5px; font-weight: 600; background: var(--surface2); color: var(--text-mid); cursor: pointer; }
+.bd-tag span { color: rgba(255,255,255,0.2); font-size: 9px; margin-left: 3px; }
+.bd-meta { margin-top: 12px; }
+.bd-mr { display: flex; align-items: center; padding: 9px 18px; border-top: 1px solid var(--border); }
+.bd-ml { font-size: 9px; color: var(--text-mid); letter-spacing: 0.08em; text-transform: uppercase; width: 72px; flex-shrink: 0; }
+.bd-mv { font-size: 12.5px; color: var(--text); font-weight: 500; flex: 1; }
+.bd-mc svg { width: 11px; height: 11px; stroke: var(--text-dim); fill: none; stroke-width: 2; stroke-linecap: round; }
+
+/* ════════════════════════════
+   SCREEN 4 — REVIEW PROMPT
+════════════════════════════ */
+.rp-bg { min-height: 100%; background: var(--bg); }
+.rp-glow { position: absolute; top: 0; left: 0; right: 0; height: 200px; background: linear-gradient(180deg, #131840 0%, transparent 100%); pointer-events: none; }
+.rp-in { position: relative; z-index: 2; }
+.rp-hero { padding: 36px 18px 0; display: flex; gap: 14px; }
+.rp-cv { width: 66px; height: 98px; border-radius: 8px; overflow: hidden; flex-shrink: 0; box-shadow: 0 8px 20px rgba(0,0,0,0.65); }
+.rp-cv-ph { width: 100%; height: 100%; background: linear-gradient(160deg, #1a2a6e, #0d1540); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+.rp-bi { padding-top: 4px; }
+.rp-ey { font-size: 8.5px; font-weight: 700; color: var(--teal); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 5px; display: flex; align-items: center; gap: 3px; }
+.rp-tt { font-size: 15px; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 3px; }
+.rp-au { font-size: 10.5px; color: var(--text-mid); }
+
+/* Interactive star picker */
+.rp-ss { padding: 22px 18px 0; text-align: center; }
+.rp-sl { font-size: 11.5px; color: var(--text-mid); margin-bottom: 12px; }
+.rp-sr { display: flex; justify-content: center; gap: 8px; margin-bottom: 5px; }
+.rp-s {
+  font-size: 34px; cursor: pointer; line-height: 1;
+  transition: transform 0.12s, color 0.1s;
+  color: #1e1e1e;
+}
+.rp-s.f { color: var(--gold); filter: drop-shadow(0 0 5px rgba(201,165,90,0.3)); }
+.rp-s:hover { transform: scale(1.18); }
+.rp-h { font-size: 10px; color: var(--teal); font-weight: 500; height: 14px; transition: opacity 0.2s; }
+
+/* Interactive tag picker */
+.rp-ts { padding: 16px 18px 0; }
+.rp-tl { font-size: 10.5px; color: var(--text-mid); text-align: center; margin-bottom: 9px; }
+.rp-tr { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.rp-tag {
+  padding: 6px 13px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+  cursor: pointer; font-family: var(--body);
+  border: 1px solid var(--border); color: var(--text-mid);
+  background: transparent; transition: all 0.14s;
+}
+.rp-tag:hover { border-color: rgba(255,255,255,0.2); color: var(--text-soft); }
+.rp-tag.s-lo { background: var(--gold-dim); color: var(--gold); border-color: rgba(201,165,90,0.28); }
+.rp-tag.s-re { background: rgba(46,196,182,0.1); color: var(--teal); border-color: rgba(46,196,182,0.28); }
+.rp-tag.s-ok { background: rgba(255,255,255,0.07); color: #ccc; border-color: rgba(255,255,255,0.16); }
+.rp-tag.s-dn { background: rgba(224,92,138,0.1); color: var(--pink); border-color: rgba(224,92,138,0.25); }
+.rp-tag.s-rr { background: rgba(123,109,250,0.1); color: var(--purple); border-color: rgba(123,109,250,0.28); }
+
+.rp-txt { padding: 14px 18px 0; }
+.rp-ta {
+  width: 100%; background: var(--surface);
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; color: var(--text); font-family: var(--body);
+  font-size: 12px; resize: none; height: 68px; outline: none; line-height: 1.55;
+  transition: border-color 0.18s;
+}
+.rp-ta::placeholder { color: #282828; }
+.rp-ta:focus { border-color: rgba(46,196,182,0.28); }
+.rp-ch { font-size: 9px; color: #222; text-align: right; margin-top: 3px; }
+
+.rp-act { padding: 12px 18px 0; display: flex; gap: 8px; }
+.rp-sv { flex: 1; padding: 12px; background: var(--teal); color: #000; font-size: 13px; font-weight: 700; border-radius: 11px; border: none; font-family: var(--body); cursor: pointer; transition: opacity 0.15s; }
+.rp-sv:hover { opacity: 0.9; }
+.rp-sk { padding: 12px 14px; background: var(--surface); color: var(--text-soft); font-size: 12px; font-weight: 500; border-radius: 11px; border: 1px solid var(--border); font-family: var(--body); cursor: pointer; }
+
+.rp-nu { margin: 10px 18px 0; background: linear-gradient(135deg, #0b1918, #06100f); border: 1px solid rgba(46,196,182,0.15); border-radius: 11px; padding: 10px 12px; display: flex; align-items: center; gap: 8px; }
+.rn-i svg { width: 14px; height: 14px; stroke: var(--teal); fill: none; stroke-width: 2; stroke-linecap: round; }
+.rn-tx { flex: 1; }
+.rn-ti { font-size: 10.5px; font-weight: 600; color: rgba(255,255,255,0.5); }
+.rn-su { font-size: 9px; color: var(--text-mid); margin-top: 1px; }
+.rn-ar svg { width: 12px; height: 12px; stroke: var(--teal); fill: none; stroke-width: 2; stroke-linecap: round; }
+
+/* ── NAV SVG HELPERS ── */
+/* Reusable nav items assembled in HTML */
+
+/* ── PAGE FOOTER ── */
+.page-footer {
+  text-align: center;
+  padding: 52px 20px 0;
+}
+.pf-name {
+  font-family: var(--serif); font-style: italic;
+  font-size: 16px; color: var(--text-soft); margin-bottom: 4px;
+}
+.pf-sub { font-size: 11px; color: var(--text-mid); }
+
+/* ── INTERACTION NOTE ── */
+.interaction-note {
+  text-align: center;
+  font-size: 10px; color: rgba(46,196,182,0.4);
+  letter-spacing: 0.06em; margin-bottom: 8px;
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <div class="ph-eyebrow"><span class="ph-dot"></span>Feature Concept · Independent Proposal<span class="ph-dot"></span></div>
+  <h1 class="ph-title">Libby deserves a reading memory.</h1>
+  <p class="ph-sub">A personal rate, review, and reading log concept for the world's most-loved library app.</p>
+  <div class="ph-tag">
+    <svg viewBox="0 0 24 24" style="width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    Kristen Autret · Libby enthusiast · 483 titles borrowed
+  </div>
+</header>
+
+<!-- SECTION: SHELF + TIMELINE BEFORE/AFTER -->
+<div class="section-header">
+  <div class="sh-label">Screens 1 & 2</div>
+  <div class="sh-title">Shelf profile & Timeline — before and after</div>
+  <div class="sh-divider"></div>
+</div>
+<p class="interaction-note">↕ Screens are scrollable</p>
+
+<div class="phones-wrap">
+
+  <!-- PHONE 1: SHELF -->
+  <div class="phone-col">
+    <div class="phone-label">Shelf</div>
+    <div class="phone-sublabel">↑ Profile header added</div>
+    <div class="phone">
+      <div class="dynamic-island"></div>
+      <div class="phone-inner">
+        <div class="sb">
+          <span>9:51</span>
+          <div class="sb-r">
+            <div class="signal-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+            <svg class="wifi-icon" viewBox="0 0 24 24" style="stroke:rgba(255,255,255,0.8);fill:none;stroke-width:2;stroke-linecap:round;"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="rgba(255,255,255,0.8)" stroke="none"/></svg>
+            <div class="batt-wrap"><div class="batt"><div class="batt-f"></div></div></div>
+            <span style="font-size:9px;">18</span>
+          </div>
+        </div>
+        <div class="shelf-topbar"><button class="actions-btn">ACTIONS</button></div>
+
+        <!-- NEW: Profile card -->
+        <div class="profile-card">
+          <div class="pc-top">
+            <div class="pc-av">K</div>
+            <div>
+              <div class="pc-name">kristen_reads</div>
+              <div class="pc-sub">Douglas County Libraries · since 2018</div>
+            </div>
+          </div>
+          <div class="pc-stats">
+            <div class="pcs"><div class="pcs-n">134</div><div class="pcs-l">read in 2025</div></div>
+            <div class="pcs"><div class="pcs-n">28</div><div class="pcs-l">so far in 2026</div></div>
+            <div class="pcs"><div class="pcs-n">483</div><div class="pcs-l">total borrowed</div></div>
+          </div>
+        </div>
+
+        <div class="shelf-rows">
+          <div class="srow">
+            <div class="sr-ico"><svg viewBox="0 0 24 24"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
+            <div class="sr-tx"><div class="sr-ti">Loans</div></div>
+            <span class="bdg b-dk">2</span>
+            <span class="chv"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+          <div class="srow">
+            <div class="sr-ico"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+            <div class="sr-tx"><div class="sr-ti">Holds</div></div>
+            <span class="bdg b-dk">8</span>
+            <span class="chv"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+          <div class="srow">
+            <div class="sr-ico"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+            <div class="sr-tx"><div class="sr-ti">Timeline</div><div class="sr-su">Now includes your ratings</div></div>
+            <span class="chv"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+          <div class="srow">
+            <div class="sr-ico"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div class="sr-tx"><div class="sr-ti">Notices</div></div>
+            <span class="bdg b-pk" style="font-size:9.5px;padding:2px 7px;">1</span>
+            <span class="chv"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></span>
+          </div>
+        </div>
+
+        <div class="wyl">
+          <div class="wyl-h"><div class="wyl-t">Where You Left Off</div><div class="wyl-x">✕</div></div>
+          <div class="cc">
+            <div class="cc-cov">📖</div>
+            <div class="cc-inf">
+              <div class="cc-au">Gareth Brown</div>
+              <div class="cc-ti">The Book of Doors</div>
+              <div class="pb"><div class="pb-f" style="width:78%"></div></div>
+              <div class="pb-tx">78% · Due in 20 days</div>
+              <div class="cc-btns">
+                <button class="cbt cbt-t">Open</button>
+                <button class="cbt cbt-g">Manage</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bnav">
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div><div class="ni-l">Search</div></div>
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M3 21V7l9-4 9 4v14"/><path d="M9 21V13h6v8"/><line x1="3" y1="21" x2="21" y2="21"/></svg></div><div class="ni-l">Library</div></div>
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 1 1 6 0c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="none"/></svg></div><div class="ni-l">Inspire</div></div>
+        <div class="ni on"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><div class="ni-l">Shelf</div></div>
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1" fill="rgba(255,255,255,0.22)" stroke="none"/></svg></div><div class="ni-l">Tags</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE BEFORE/AFTER -->
+  <div class="ba-wrap">
+    <div class="ba-phones">
+
+      <!-- PHONE 2A: TIMELINE BEFORE -->
+      <div class="phone-col">
+        <div class="phone-label" style="color:rgba(255,255,255,0.15);">Timeline</div>
+        <div class="phone-sublabel" style="color:rgba(255,255,255,0.2);">Current</div>
+        <div class="phone">
+          <div class="dynamic-island"></div>
+          <div class="phone-inner">
+            <div class="sb"><span>9:56</span><div class="sb-r"><div class="signal-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><svg class="wifi-icon" viewBox="0 0 24 24" style="stroke:rgba(255,255,255,0.8);fill:none;stroke-width:2;stroke-linecap:round;"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="rgba(255,255,255,0.8)" stroke="none"/></svg><div class="batt-wrap"><div class="batt"><div class="batt-f"></div></div></div><span style="font-size:9px;">17</span></div></div>
+            <div class="tl-tb"><div class="bk-l">‹ Shelf</div><button class="actions-btn">ACTIONS</button></div>
+            <div class="tl-pg">Timeline</div>
+            <div class="tl-fi"><div class="fp ico"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round;"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg></div><div class="fp on">loans ✕</div></div>
+            <div class="act">
+              <div class="act-l">Activity by year</div>
+              <div class="chart-w">
+                <svg viewBox="0 0 260 64" preserveAspectRatio="none" style="width:100%;height:100%;">
+                  <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2ec4b6" stop-opacity="0.2"/><stop offset="100%" stop-color="#2ec4b6" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 60 C18 60 28 36 48 31 C68 26 78 46 98 41 C118 36 128 16 148 11 C168 6 173 26 192 31 C212 36 226 50 260 55 L260 64 L0 64Z" fill="url(#cg)"/>
+                  <path d="M0 60 C18 60 28 36 48 31 C68 26 78 46 98 41 C118 36 128 16 148 11 C168 6 173 26 192 31 C212 36 226 50 260 55" fill="none" stroke="#2ec4b6" stroke-width="1.6" stroke-linejoin="round"/>
+                  <line x1="148" y1="3" x2="148" y2="62" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="3,3"/>
+                  <text x="36" y="10" fill="rgba(255,255,255,0.3)" font-size="8" font-family="DM Sans">134</text>
+                  <text x="150" y="10" fill="rgba(255,255,255,0.3)" font-size="8" font-family="DM Sans">28</text>
+                </svg>
+              </div>
+              <div class="yr-rw"><div class="yr-lb">2025</div><div class="yr-tr"><div class="yr-fi2"></div><div class="yr-dt l"></div><div class="yr-dt r"></div></div><div class="yr-lb">2026</div></div>
+            </div>
+            <div class="mo-h"><div class="mo-n">March 2026</div><div class="mo-t">⇅</div></div>
+
+            <!-- Books WITHOUT ratings (before state) -->
+            <div class="tlb">
+              <div class="tlb-cv"><div class="tlb-cv-ph" style="background:linear-gradient(160deg,#0d1a4a,#1a0d3a);">📖</div><div class="tlb-bdg">🎧 13 HRS</div></div>
+              <div class="tlb-m"><div class="tlb-ti">The Book of Doors</div><div class="tlb-au">Gareth Brown</div><div class="tlb-bw">Borrowed for 21 days.</div></div>
+              <div class="tlb-ri"><div class="tlb-st">✅</div><div class="tlb-dn">8</div><div class="tlb-dm">MAR</div><div class="tlb-ch"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+            </div>
+            <div class="tlb">
+              <div class="tlb-cv"><div class="tlb-cv-ph" style="background:linear-gradient(160deg,#3a0d0d,#1a0a0a);">📖</div><div class="tlb-bdg">🎧 12 HRS</div></div>
+              <div class="tlb-m"><div class="tlb-ti">Good Spirits</div><div class="tlb-au">B.K. Borison</div><div class="tlb-bw">#1 in series · 21 days.</div></div>
+              <div class="tlb-ri"><div class="tlb-st" style="font-size:15px;color:var(--text-mid);">+</div><div class="tlb-dn">7</div><div class="tlb-dm">MAR</div><div class="tlb-ch"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+            </div>
+            <div class="tlb">
+              <div class="tlb-cv"><div class="tlb-cv-ph" style="background:linear-gradient(160deg,#1a1a0d,#0a1a0a);">📖</div><div class="tlb-bdg">🎧 19 HRS</div></div>
+              <div class="tlb-m"><div class="tlb-ti">Becoming</div><div class="tlb-au">Michelle Obama</div><div class="tlb-bw">Borrowed for 21 days.</div></div>
+              <div class="tlb-ri"><div class="tlb-st" style="font-size:14px;color:var(--pink);">⊖</div><div class="tlb-dn">4</div><div class="tlb-dm">MAR</div><div class="tlb-ch"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+            </div>
+            <div class="tlb">
+              <div class="tlb-cv"><div class="tlb-cv-ph" style="background:linear-gradient(160deg,#2a1a0a,#1a0a0a);">📖</div><div class="tlb-bdg">🎧 11 HRS</div></div>
+              <div class="tlb-m"><div class="tlb-ti">The Husbands</div><div class="tlb-au">Holly Gramazio</div><div class="tlb-bw">Borrowed for 21 days.</div></div>
+              <div class="tlb-ri"><div class="tlb-st" style="font-size:15px;color:var(--text-mid);">+</div><div class="tlb-dn">2</div><div class="tlb-dm">MAR</div><div class="tlb-ch"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+            </div>
+          </div>
+          <div class="bnav">
+            <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div><div class="ni-l">Search</div></div>
+            <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M3 21V7l9-4 9 4v14"/><path d="M9 21V13h6v8"/><line x1="3" y1="21" x2="21" y2="21"/></svg></div><div class="ni-l">Library</div></div>
+            <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 1 1 6 0c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="none"/></svg></div><div class="ni-l">Inspire</div></div>
+            <div class="ni on"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><div class="ni-l">Shelf</div></div>
+            <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1" fill="rgba(255,255,255,0.22)" stroke="none"/></svg></div><div class="ni-l">Tags</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow connector -->
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:300px;gap:6px;flex-shrink:0;">
+        <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--teal);fill:none;stroke-width:2;stroke-linecap:round;opacity:0.6;"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+
+      <!-- PHONE 2B: TIMELINE AFTER -->
+      <div class="phone-col">
+        <div class="phone-label">Timeline</div>
+        <div class="phone-sublabel">↑ Ratings added</div>
+        <div class="phone">
+          <div class="dynamic-island"></div>
+          <div class="phone-inner">
+            <div class="sb"><span>9:56</span><div class="sb-r"><div class="signal-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><svg class="wifi-icon" viewBox="0 0 24 24" style="stroke:rgba(255,255,255,0.8);fill:none;stroke-width:2;stroke-linecap:round;"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="rgba(255,255,255,0.8)" stroke="none"/></svg><div class="batt-wrap"><div class="batt"><div class="batt-f"></div></div></div><span style="font-size:9px;">17</span></div></div>
+            <div class="tl-tb"><div class="bk-l">‹ Shelf</div><button class="actions-btn">ACTIONS</button></div>
+            <div class="tl-pg">Timeline</div>
+            <div class="tl-fi"><div class="fp ico"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:#000;fill:none;stroke-width:2;stroke-linecap:round;"><line x1="3" y1="6" x2="21" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="9" y1="18" x2="15" y2="18"/></svg></div><div class="fp on">loans ✕</div></div>
+            <div class="act">
+              <div class="act-l">Activity by year</div>
+              <div class="chart-w">
+                <svg viewBox="0 0 260 64" preserveAspectRatio="none" style="width:100%;height:100%;">
+                  <defs><linearGradient id="cg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2ec4b6" stop-opacity="0.2"/><stop offset="100%" stop-color="#2ec4b6" stop-opacity="0"/></linearGradient></defs>
+                  <path d="M0 60 C18 60 28 36 48 31 C68 26 78 46 98 41 C118 36 128 16 148 11 C168 6 173 26 192 31 C212 36 226 50 260 55 L260 64 L0 64Z" fill="url(#cg2)"/>
+                  <path d="M0 60 C18 60 28 36 48 31 C68 26 78 46 98 41 C118 36 128 16 148 11 C168 6 173 26 192 31 C212 36 226 50 260 55" fill="none" stroke="#2ec4b6" stroke-width="1.6" stroke-linejoin="round"/>
+                  <line x1="148" y1="3" x2="148" y2="62" stroke="rgba(255,255,255,0.07)" stroke-width="1" stroke-dasharray="3,3"/>
+                  <text x="36" y="10" fill="rgba(255,255,255,0.3)" font-size="8" font-family="DM Sans">134</text>
+                  <text x="150" y="10" fill="rgba(255,255,255,0.3)" font-size="8" font-family="DM Sans">28</text>
+                </svg>
+              </div>
+              <div class="yr-rw"><div class="yr-lb">2025</div><div class="yr-tr"><div class="yr-fi2"></div><div class="yr-dt l"></div><div class="yr-dt r"></div></div><div class="yr-lb">2026</div></div>
+            </div>
+            <div class="mo-h"><div class="mo-n">March 2026</div><div class="mo-t">⇅</div></div>
+
+            <!-- Books WITH ratings (after state) -->
+            <div class="tlb">
+              <div class="tlb-cv"><div class="tlb-cv-ph" style="background:linear-gradient(160deg,#0d1a4a,#1a0d3a);">📖</div><div class="tlb-bdg">🎧 13 HRS</div></div>
+              <div class="tlb-m">
+                <div class="tlb-ti">The Book of Doors</div><div class="tlb-au">Gareth Brown</div><div class="tlb-bw">Borrowed for 21 days.</div>
+                <div class="tlb-rat"><div class="sts"><span class="st f">★</span><span class="st f">★</span><span class="st f">★</span><span class="st f">★</span><span class="st e">★</span></div><span class="rtg rt-lo">Loved it</span><span class="rtg rt-re">Recommended</span></div>
+              </div>
+              <div class="tlb-ri"><div class="tlb-st">✅</div><div class="tlb-dn">8</div><div class="tlb-dm">MAR</div><div class="tlb-ch"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+            </div>
+            <div class="tlb">
+              <div class="tlb-cv"><div class="tlb-cv-ph" style="background:linear-gradient(160deg,#3a0d0d,#1a0a0a);">📖</div><div class="tlb-bdg">🎧 12 HRS</div></div>
+              <div class="tlb-m">
+                <div class="tlb-ti">Good Spirits</div><div class="tlb-au">B.K. Borison</div><div class="tlb-bw">#1 in series · 21 days.</div>
+                <div class="tlb-rat"><div class="sts"><span class="st f">★</span><span class="st f">★</span><span class="st f">★</span><span class="st e">★</span><span class="st e">★</span></div><span class="rtg rt-ok">It was okay</span></div>
+              </div>
+              <div class="tlb-ri"><div class="tlb-st" style="font-size:15px;color:var(--text-mid);">+</div><div class="tlb-dn">7</div><div class="tlb-dm">MAR</div><div class="tlb-ch"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+            </div>
+            <div class="tlb">
+              <div class="tlb-cv"><div class="tlb-cv-ph" style="background:linear-gradient(160deg,#1a1a0d,#0a1a0a);">📖</div><div class="tlb-bdg">🎧 19 HRS</div></div>
+              <div class="tlb-m">
+                <div class="tlb-ti">Becoming</div><div class="tlb-au">Michelle Obama</div><div class="tlb-bw">Borrowed for 21 days.</div>
+                <div class="tlb-rat"><span class="rate-cta">★ Rate this book</span></div>
+              </div>
+              <div class="tlb-ri"><div class="tlb-st" style="font-size:14px;color:var(--pink);">⊖</div><div class="tlb-dn">4</div><div class="tlb-dm">MAR</div><div class="tlb-ch"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+            </div>
+            <div class="tlb">
+              <div class="tlb-cv"><div class="tlb-cv-ph" style="background:linear-gradient(160deg,#2a1a0a,#1a0a0a);">📖</div><div class="tlb-bdg">🎧 11 HRS</div></div>
+              <div class="tlb-m">
+                <div class="tlb-ti">The Husbands</div><div class="tlb-au">Holly Gramazio</div><div class="tlb-bw">Borrowed for 21 days.</div>
+                <div class="tlb-rat"><div class="sts"><span class="st f">★</span><span class="st f">★</span><span class="st f">★</span><span class="st f">★</span><span class="st f">★</span></div><span class="rtg rt-rr">Want to reread</span></div>
+              </div>
+              <div class="tlb-ri"><div class="tlb-st" style="font-size:15px;color:var(--text-mid);">+</div><div class="tlb-dn">2</div><div class="tlb-dm">MAR</div><div class="tlb-ch"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+            </div>
+          </div>
+          <div class="bnav">
+            <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div><div class="ni-l">Search</div></div>
+            <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M3 21V7l9-4 9 4v14"/><path d="M9 21V13h6v8"/><line x1="3" y1="21" x2="21" y2="21"/></svg></div><div class="ni-l">Library</div></div>
+            <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 1 1 6 0c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="none"/></svg></div><div class="ni-l">Inspire</div></div>
+            <div class="ni on"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><div class="ni-l">Shelf</div></div>
+            <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1" fill="rgba(255,255,255,0.22)" stroke="none"/></svg></div><div class="ni-l">Tags</div></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end ba-phones -->
+  </div><!-- end ba-wrap -->
+
+</div><!-- end phones-wrap -->
+
+<!-- SECTION: BOOK DETAIL + REVIEW PROMPT -->
+<div class="section-header" style="padding-top:52px;">
+  <div class="sh-label">Screens 3 & 4</div>
+  <div class="sh-title">Book detail with your review · Post-completion prompt</div>
+  <div class="sh-divider"></div>
+</div>
+<p class="interaction-note">↕ Screens are scrollable · ★ Stars and tags are interactive</p>
+
+<div class="phones-wrap">
+
+  <!-- PHONE 3: BOOK DETAIL -->
+  <div class="phone-col">
+    <div class="phone-label">Book Detail</div>
+    <div class="phone-sublabel">↑ Your Review card added</div>
+    <div class="phone">
+      <div class="dynamic-island"></div>
+      <div class="phone-inner">
+        <div class="sb" style="background:linear-gradient(180deg,#1c2146,transparent);position:relative;z-index:200;">
+          <span>9:58</span><div class="sb-r"><div class="signal-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><svg class="wifi-icon" viewBox="0 0 24 24" style="stroke:rgba(255,255,255,0.8);fill:none;stroke-width:2;stroke-linecap:round;"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="rgba(255,255,255,0.8)" stroke="none"/></svg><div class="batt-wrap"><div class="batt"><div class="batt-f"></div></div></div><span style="font-size:9px;">17</span></div>
+        </div>
+        <div class="bd-hd">
+          <div class="bd-ey">THE BOOK OF DOORS</div>
+          <div class="bd-tr"><div class="bd-ti">The Book of Doors</div><div class="bd-sh"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div></div>
+          <div style="font-size:10px;color:rgba(255,255,255,0.38);margin-bottom:12px;letter-spacing:0.04em;">GARETH BROWN</div>
+          <div class="bd-cv"><div class="bd-cv-ph">📖</div></div>
+        </div>
+        <div class="bd-brow"><div class="bd-bl">Borrowed</div><div class="bb"><div class="bb-c">✓</div><div class="bb-l">L</div></div></div>
+        <div class="bd-op">Open Audiobook</div>
+
+        <!-- Your Review -->
+        <div class="bd-yr">
+          <div class="byr-top"><div class="byr-h">Your Review</div><div class="byr-e">Edit</div></div>
+          <div class="byr-sts"><span class="byr-s f">★</span><span class="byr-s f">★</span><span class="byr-s f">★</span><span class="byr-s f">★</span><span class="byr-s e">★</span></div>
+          <div class="byr-tags"><span class="byr-tag byt-lo">Loved it</span><span class="byr-tag byt-re">Recommended</span></div>
+          <div class="byr-txt">"Couldn't put it down. The magic system is so original and the ending completely got me."</div>
+          <div class="byr-share">
+            <div class="byr-si"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+            <span class="byr-st">You marked this Recommended</span>
+            <button class="byr-sb">Send link</button>
+          </div>
+        </div>
+
+        <!-- Reading Journey -->
+        <div class="bd-jrn">
+          <div class="jrn-row"><div class="jrn-dot jd-a">●</div><div class="jrn-lbl">Tagged with receipt</div><div class="jrn-dt">8<br><span style="font-size:7px;color:#3a3a3a;">MAR</span></div></div>
+          <div class="jrn-row"><div class="jrn-dot jd-d">◐</div><div class="jrn-lbl">Borrowed for 21 days.</div><div class="jrn-dt"></div></div>
+          <div class="jrn-row"><div class="jrn-dot jd-d">◐</div><div class="jrn-lbl">Placed on hold.</div><div class="jrn-dt">3<br><span style="font-size:7px;color:#3a3a3a;">MAR</span></div></div>
+          <button class="jrn-btn">READING JOURNEY</button>
+        </div>
+
+        <div class="bd-tags">
+          <div class="bd-tag">similar ≈</div><div class="bd-tag">fiction <span>49k</span></div>
+          <div class="bd-tag">romance <span>22k</span></div><div class="bd-tag">fantasy <span>12k</span></div>
+        </div>
+        <div class="bd-meta">
+          <div class="bd-mr"><div class="bd-ml">FORMAT</div><div class="bd-mv">Audiobook</div></div>
+          <div class="bd-mr"><div class="bd-ml">DURATION</div><div class="bd-mv">13 hours (approx.)</div></div>
+          <div class="bd-mr"><div class="bd-ml">AUTHOR</div><div class="bd-mv">Gareth Brown</div><div class="bd-mc"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div></div>
+          <div class="bd-mr"><div class="bd-ml">NARRATOR</div><div class="bd-mv">Miranda Raison</div><div class="bd-mc"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div></div>
+        </div>
+      </div>
+      <div class="bnav">
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div><div class="ni-l">Search</div></div>
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M3 21V7l9-4 9 4v14"/><path d="M9 21V13h6v8"/><line x1="3" y1="21" x2="21" y2="21"/></svg></div><div class="ni-l">Library</div></div>
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 1 1 6 0c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="none"/></svg></div><div class="ni-l">Inspire</div></div>
+        <div class="ni on"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><div class="ni-l">Shelf</div></div>
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1" fill="rgba(255,255,255,0.22)" stroke="none"/></svg></div><div class="ni-l">Tags</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE 4: REVIEW PROMPT (interactive) -->
+  <div class="phone-col">
+    <div class="phone-label">Post-Completion Prompt</div>
+    <div class="phone-sublabel">↑ Tap stars & tags to interact</div>
+    <div class="phone">
+      <div class="dynamic-island"></div>
+      <div class="phone-inner">
+        <div class="sb"><span>9:58</span><div class="sb-r"><div class="signal-bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div><svg class="wifi-icon" viewBox="0 0 24 24" style="stroke:rgba(255,255,255,0.8);fill:none;stroke-width:2;stroke-linecap:round;"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="rgba(255,255,255,0.8)" stroke="none"/></svg><div class="batt-wrap"><div class="batt"><div class="batt-f"></div></div></div><span style="font-size:9px;">17</span></div></div>
+        <div class="rp-bg">
+          <div class="rp-glow"></div>
+          <div class="rp-in">
+            <div class="rp-hero">
+              <div class="rp-cv"><div class="rp-cv-ph">📖</div></div>
+              <div class="rp-bi">
+                <div class="rp-ey">✓ Finished</div>
+                <div class="rp-tt">The Book of Doors</div>
+                <div class="rp-au">Gareth Brown · 13 hrs</div>
+              </div>
+            </div>
+
+            <!-- Interactive stars -->
+            <div class="rp-ss">
+              <div class="rp-sl">How was it?</div>
+              <div class="rp-sr" id="starRow">
+                <span class="rp-s" data-val="1">★</span>
+                <span class="rp-s" data-val="2">★</span>
+                <span class="rp-s" data-val="3">★</span>
+                <span class="rp-s" data-val="4">★</span>
+                <span class="rp-s" data-val="5">★</span>
+              </div>
+              <div class="rp-h" id="starHint">Tap a star to rate</div>
+            </div>
+
+            <!-- Interactive tags -->
+            <div class="rp-ts">
+              <div class="rp-tl">Add a shelf tag (optional)</div>
+              <div class="rp-tr" id="tagRow">
+                <button class="rp-tag" data-tag="lo" data-cls="s-lo">Loved it</button>
+                <button class="rp-tag" data-tag="ok" data-cls="s-ok">It was okay</button>
+                <button class="rp-tag" data-tag="dn" data-cls="s-dn">Didn't finish</button>
+                <button class="rp-tag" data-tag="re" data-cls="s-re">Recommended</button>
+                <button class="rp-tag" data-tag="rr" data-cls="s-rr">Want to reread</button>
+              </div>
+            </div>
+
+            <div class="rp-txt">
+              <textarea class="rp-ta" id="reviewText" placeholder="What stayed with you? (optional)" maxlength="500"></textarea>
+              <div class="rp-ch" id="charCount">0 / 500</div>
+            </div>
+
+            <div class="rp-act">
+              <button class="rp-sv" id="saveBtn">Save to my log</button>
+              <button class="rp-sk">Skip</button>
+            </div>
+
+            <!-- Share nudge — shown when Recommended is selected -->
+            <div class="rp-nu" id="shareNudge" style="display:none;">
+              <div class="rn-i"><svg viewBox="0 0 24 24"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+              <div class="rn-tx"><div class="rn-ti">You marked this Recommended</div><div class="rn-su">Send a link to a friend after saving</div></div>
+              <div class="rn-ar"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+            </div>
+
+            <!-- Saved confirmation -->
+            <div id="savedMsg" style="display:none;margin:12px 18px 0;padding:12px 14px;background:rgba(46,196,182,0.1);border:1px solid rgba(46,196,182,0.25);border-radius:11px;font-size:12px;color:var(--teal);font-weight:500;text-align:center;">
+              ✓ Saved to your reading log
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bnav">
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></div><div class="ni-l">Search</div></div>
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M3 21V7l9-4 9 4v14"/><path d="M9 21V13h6v8"/><line x1="3" y1="21" x2="21" y2="21"/></svg></div><div class="ni-l">Library</div></div>
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 1 1 6 0c0 2-3 3-3 3"/><circle cx="12" cy="17" r="0.5" fill="currentColor" stroke="none"/></svg></div><div class="ni-l">Inspire</div></div>
+        <div class="ni on"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><div class="ni-l">Shelf</div></div>
+        <div class="ni"><div class="ni-i"><svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><circle cx="7" cy="7" r="1" fill="rgba(255,255,255,0.22)" stroke="none"/></svg></div><div class="ni-l">Tags</div></div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end phones-wrap -->
+
+<!-- PAGE FOOTER -->
+<footer class="page-footer">
+  <div class="pf-name">Kristen Autret</div>
+  <div class="pf-sub">Libby enthusiast · Douglas County Libraries · Independent concept · March 2026</div>
+</footer>
+
+<script>
+// ── INTERACTIVE STARS ──
+const hints = ['', 'Not for me', 'It was okay', 'Pretty good', 'Really liked it', 'Loved it'];
+const stars = document.querySelectorAll('#starRow .rp-s');
+const hint = document.getElementById('starHint');
+let currentRating = 0;
+
+function setStars(n) {
+  stars.forEach((s, i) => {
+    s.classList.toggle('f', i < n);
+  });
+  hint.textContent = n > 0 ? hints[n] : 'Tap a star to rate';
+  currentRating = n;
+}
+
+stars.forEach((s, i) => {
+  s.addEventListener('click', () => setStars(i + 1));
+  s.addEventListener('mouseenter', () => {
+    stars.forEach((st, si) => st.classList.toggle('f', si <= i));
+  });
+});
+document.getElementById('starRow').addEventListener('mouseleave', () => {
+  setStars(currentRating);
+});
+
+// ── INTERACTIVE TAGS ──
+const tags = document.querySelectorAll('#tagRow .rp-tag');
+const shareNudge = document.getElementById('shareNudge');
+let currentTag = null;
+
+tags.forEach(tag => {
+  tag.addEventListener('click', () => {
+    const cls = tag.dataset.cls;
+    const isSelected = tag.classList.contains(cls);
+
+    // deselect all
+    tags.forEach(t => {
+      t.className = 'rp-tag';
+    });
+
+    if (!isSelected) {
+      tag.classList.add(cls);
+      currentTag = tag.dataset.tag;
+    } else {
+      currentTag = null;
+    }
+
+    // show share nudge only for Recommended
+    shareNudge.style.display = (currentTag === 're') ? 'flex' : 'none';
+  });
+});
+
+// ── CHAR COUNT ──
+const ta = document.getElementById('reviewText');
+const cc = document.getElementById('charCount');
+ta.addEventListener('input', () => {
+  cc.textContent = `${ta.value.length} / 500`;
+  cc.style.color = ta.value.length > 450 ? 'var(--teal)' : '#222';
+});
+
+// ── SAVE BUTTON ──
+document.getElementById('saveBtn').addEventListener('click', () => {
+  const msg = document.getElementById('savedMsg');
+  msg.style.display = 'block';
+  msg.style.opacity = '0';
+  msg.style.transition = 'opacity 0.3s';
+  setTimeout(() => msg.style.opacity = '1', 10);
+  document.getElementById('saveBtn').textContent = '✓ Saved';
+  document.getElementById('saveBtn').style.opacity = '0.6';
+});
+</script>
+
+</body>
+</html>
